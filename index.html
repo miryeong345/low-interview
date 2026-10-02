@@ -1,0 +1,773 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>면담 질문 수첩</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Jua&display=swap">
+<style>
+/* 레이아웃: 맨 위 칠판에 수업 주제가 적혀 있고, 그 아래 한 줄짜리 공책을 4단계로 넘기며 쓴다. 힌트는 노란 쪽지로만 붙는다. */
+:root{
+  --paper:#F1F5EF; --surface:#FFFFFF; --ink:#1D2A25; --muted:#56665E; --line:#CBD6CD;
+  --accent:#1F6A51; --on-accent:#FFFFFF;
+  --board:#225A47; --board-fg:#F3F8F1; --board-dim:#BFD8CB; --wood:#B58A5C;
+  --note:#FFF0B0; --note-ink:#4A3A00; --note-edge:#E0BC3A;
+  --flag:#FFE7DD; --flag-ink:#86310F;
+  --ok:#E0F1E6; --ok-ink:#1C583E;
+  --c-info:#2A68AD; --c-exp:#B4531D; --c-how:#6649B0; --c-feel:#BC3568;
+  --font-display:'Jua','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --font-body:'Gowun Dodum','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  --font-note:'Gaegu','Gowun Dodum','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131A17; --surface:#1C2521; --ink:#E7EEE9; --muted:#9DAEA5; --line:#35433C;
+    --accent:#74CFAB; --on-accent:#0D1915;
+    --board:#1D4A3B; --board-fg:#EEF5EF; --board-dim:#A9C9B9; --wood:#7A5C3B;
+    --note:#3A3312; --note-ink:#F7E594; --note-edge:#8C7620;
+    --flag:#40241B; --flag-ink:#FFBB9E;
+    --ok:#1C3529; --ok-ink:#9FDDBD;
+    --c-info:#84B8F0; --c-exp:#F0A374; --c-how:#BBA7F4; --c-feel:#F397BB;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131A17; --surface:#1C2521; --ink:#E7EEE9; --muted:#9DAEA5; --line:#35433C;
+  --accent:#74CFAB; --on-accent:#0D1915;
+  --board:#1D4A3B; --board-fg:#EEF5EF; --board-dim:#A9C9B9; --wood:#7A5C3B;
+  --note:#3A3312; --note-ink:#F7E594; --note-edge:#8C7620;
+  --flag:#40241B; --flag-ink:#FFBB9E;
+  --ok:#1C3529; --ok-ink:#9FDDBD;
+  --c-info:#84B8F0; --c-exp:#F0A374; --c-how:#BBA7F4; --c-feel:#F397BB;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--font-body); font-size:17px; line-height:1.65;
+  word-break:keep-all; overflow-wrap:anywhere;
+}
+.wrap{max-width:780px; margin-inline:auto; padding-inline:16px; padding-block:18px 56px; display:grid; gap:18px}
+h1,h2,h3,p,ol,ul,dl,dd{margin:0}
+ol,ul{padding:0; list-style:none}
+h1,h2,h3{font-family:var(--font-display); font-weight:400; text-wrap:balance; line-height:1.3}
+button{font:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+
+/* 칠판 */
+.board{
+  background:var(--board); color:var(--board-fg);
+  border:6px solid var(--wood); border-bottom-width:12px; border-radius:6px;
+  padding:18px 20px 20px; display:grid; gap:6px;
+}
+.board-topic{font-family:var(--font-note); font-weight:700; font-size:1.2rem; color:var(--board-dim); line-height:1.3}
+.board h1{font-size:2.1rem; letter-spacing:.01em}
+.board-sub{color:var(--board-dim); font-size:.98rem}
+
+/* 단계 줄 */
+.bar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:5;
+  background:var(--paper); padding-block:8px; display:grid; gap:8px;
+  border-bottom:1px solid var(--line);
+}
+.steps{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px}
+.step-btn{
+  display:flex; align-items:center; gap:6px; justify-content:center;
+  padding:8px 6px; border:2px solid var(--line); border-radius:999px;
+  background:var(--surface); font-family:var(--font-display); font-size:.98rem; line-height:1.2; min-width:0;
+}
+.step-btn .n{
+  flex:none; width:1.5em; height:1.5em; border-radius:50%; display:grid; place-items:center;
+  background:var(--line); color:var(--ink); font-size:.85em;
+}
+.step-btn[aria-current="step"]{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+.step-btn[aria-current="step"] .n{background:var(--on-accent); color:var(--accent)}
+.count{display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:.92rem; color:var(--muted)}
+.count b{font-family:var(--font-display); font-weight:400; color:var(--ink); font-size:1.1rem; font-variant-numeric:tabular-nums}
+.dots{display:flex; gap:4px}
+.dots i{width:12px; height:12px; border-radius:50%; border:2px solid var(--line); background:transparent}
+.dots i.on{background:var(--accent); border-color:var(--accent)}
+@media (max-width:560px){
+  .steps{display:flex}
+  .step-btn{flex:none; padding:8px 10px}
+  .step-btn[aria-current="step"]{flex:1}
+  .step-btn:not([aria-current="step"]) .lbl{display:none}
+  .board h1{font-size:1.75rem}
+}
+
+/* 단계 본문 */
+.stage{display:grid; gap:20px}
+.stage-head{display:grid; gap:4px}
+.stage-head h2{font-size:1.55rem}
+.stage-head p{color:var(--muted); max-width:38em}
+.field{display:grid; gap:8px; padding-bottom:20px; border-bottom:1px dashed var(--line)}
+.field:last-of-type{border-bottom:0; padding-bottom:0}
+.q-label{font-family:var(--font-display); font-size:1.2rem}
+.q-sub{color:var(--muted); font-size:.92rem}
+input[type="text"], textarea{
+  width:100%; font:inherit; font-size:1.06rem; line-height:1.55; color:var(--ink);
+  background:var(--surface); border:2px solid var(--line); border-radius:10px; padding:10px 12px;
+}
+textarea{resize:none; overflow:hidden; display:block; min-height:2.9em}
+input[type="text"]:focus, textarea:focus{outline:0; border-color:var(--accent)}
+::placeholder{color:var(--muted); opacity:.75}
+.name-row{display:grid; gap:6px; max-width:22em}
+.name-row label{font-size:.92rem; color:var(--muted)}
+
+/* 힌트 쪽지 */
+.hintbox{display:grid; gap:8px; justify-items:start}
+.hint-notes{display:grid; gap:6px; width:100%}
+.hint-notes li{
+  background:var(--note); color:var(--note-ink); border:1px solid var(--note-edge); border-radius:3px;
+  padding:7px 12px; font-family:var(--font-note); font-weight:700; font-size:1.22rem; line-height:1.4;
+  max-width:34em;
+}
+.hint-btn{
+  display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap;
+  background:var(--note); color:var(--note-ink); border:2px solid var(--note-edge); border-radius:999px;
+  padding:5px 14px; font-family:var(--font-display); font-size:.98rem;
+}
+.hint-btn svg{flex:none}
+.hint-left{font-family:var(--font-body); font-size:.8rem; opacity:.8}
+.hint-done{font-size:.9rem; color:var(--muted)}
+
+/* 질문 종류 */
+.recap{background:var(--ok); color:var(--ok-ink); border-radius:10px; padding:12px 14px; display:grid; gap:2px; font-size:.98rem}
+.recap b{font-family:var(--font-display); font-weight:400}
+.types{display:grid; gap:18px}
+.type{
+  background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:16px; display:grid; gap:12px;
+}
+.type-head{display:grid; gap:2px}
+.type-head h3{font-size:1.25rem; color:var(--c); display:flex; align-items:center; gap:8px}
+.type-head h3::before{content:""; flex:none; width:.75em; height:.75em; border-radius:3px; background:var(--c)}
+.type-head p{color:var(--muted); font-size:.96rem}
+.example{font-size:.98rem; display:grid; grid-template-columns:auto minmax(0,1fr); gap:4px 8px; align-items:baseline}
+.example-tag{
+  font-family:var(--font-display); font-size:.82rem; color:var(--c);
+  border:1.5px solid var(--c); border-radius:6px; padding:0 7px;
+}
+.example-note{color:var(--muted); font-size:.86rem; grid-column:1 / -1}
+.q-list{display:grid; gap:8px}
+.q-row{display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:8px; align-items:start}
+.num{
+  width:2em; height:2em; margin-top:.45em; border-radius:50%; display:grid; place-items:center;
+  background:var(--c); color:var(--surface); font-family:var(--font-display); font-size:.95rem;
+  font-variant-numeric:tabular-nums;
+}
+.mini-btn{
+  margin-top:.45em; padding:4px 10px; border:1.5px solid var(--line); border-radius:8px;
+  background:transparent; color:var(--muted); font-size:.84rem; line-height:1.4; white-space:nowrap;
+}
+.mini-btn[data-armed]{border-color:var(--flag-ink); color:var(--flag-ink); background:var(--flag)}
+.mini-btn:disabled{opacity:.35; cursor:default}
+.add-btn{
+  justify-self:start; padding:6px 14px; border:2px dashed var(--c); border-radius:10px;
+  background:transparent; color:var(--c); font-family:var(--font-display); font-size:.95rem;
+}
+
+/* 다듬기 */
+.rules{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+@media (max-width:600px){ .rules{grid-template-columns:minmax(0,1fr)} }
+.rule{border:1px solid var(--line); border-radius:12px; background:var(--surface); padding:12px 14px; display:grid; gap:6px; align-content:start}
+.rule label{display:flex; gap:10px; align-items:flex-start; font-family:var(--font-display); font-size:1.05rem; line-height:1.4; cursor:pointer}
+.rule input{flex:none; width:1.25em; height:1.25em; margin-top:.15em; accent-color:var(--accent)}
+.rule details{font-size:.92rem; color:var(--muted)}
+.rule summary{cursor:pointer; width:max-content; max-width:100%}
+.rule .fix{display:grid; gap:2px; padding-top:6px}
+.rule .fix s{text-decoration-color:var(--flag-ink)}
+.rule .fix span{color:var(--ink)}
+.polish{display:grid; gap:14px}
+.polish-item{display:grid; gap:6px; padding-bottom:14px; border-bottom:1px dashed var(--line)}
+.polish-item:last-child{border-bottom:0}
+.polish-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.polish-top .num{margin-top:0}
+.kind{font-family:var(--font-display); font-size:.88rem; color:var(--c)}
+.polish-move{margin-left:auto; display:flex; gap:6px}
+.polish-move .mini-btn{margin-top:0}
+.checks{display:grid; gap:4px; font-size:.94rem}
+.checks li{border-radius:8px; padding:5px 10px; background:var(--flag); color:var(--flag-ink)}
+.checks li.fine{background:var(--ok); color:var(--ok-ink)}
+.checks li.blank{background:transparent; color:var(--muted); padding-inline:2px}
+
+/* 질문지 */
+.sheet{background:var(--surface); border:2px solid var(--ink); border-radius:4px; padding:18px; display:grid; gap:14px}
+.sheet-title{display:flex; flex-wrap:wrap; gap:6px 16px; align-items:baseline; justify-content:space-between; border-bottom:2px solid var(--ink); padding-bottom:8px}
+.sheet-title h3{font-size:1.5rem}
+.sheet-name{font-size:.98rem}
+.sheet-name b{font-weight:400; border-bottom:1px solid var(--ink); padding-inline:6px; min-width:6em; display:inline-block}
+.sheet dl{display:grid; grid-template-columns:max-content minmax(0,1fr); border:1px solid var(--line)}
+.sheet dt, .sheet dd{padding:7px 10px; border-bottom:1px solid var(--line); white-space:pre-wrap}
+.sheet dt{font-family:var(--font-display); background:var(--paper); border-right:1px solid var(--line)}
+.sheet dl > :nth-last-child(-n+2){border-bottom:0}
+.sheet-qs{display:grid; gap:0; counter-reset:q}
+.sheet-qs li{
+  counter-increment:q; display:grid; grid-template-columns:2.2em minmax(0,1fr); gap:4px;
+  padding:8px 2px; border-bottom:1px solid var(--line); white-space:pre-wrap;
+}
+.sheet-qs li::before{content:counter(q) "."; font-family:var(--font-display); font-variant-numeric:tabular-nums; color:var(--accent)}
+.sheet-empty{color:var(--muted)}
+.sheet-thanks{font-family:var(--font-note); font-weight:700; font-size:1.25rem; line-height:1.4; white-space:pre-wrap}
+.sheet-thanks span{font-family:var(--font-display); font-weight:400; font-size:.95rem; color:var(--accent); display:block}
+
+.actions{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.btn{
+  padding:10px 20px; border-radius:12px; border:2px solid var(--accent);
+  background:var(--accent); color:var(--on-accent); font-family:var(--font-display); font-size:1.08rem;
+}
+.btn.ghost{background:transparent; color:var(--accent)}
+.status{font-size:.95rem; color:var(--ok-ink)}
+.pager{display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; padding-top:6px}
+.foot{display:grid; gap:10px; color:var(--muted); font-size:.88rem; border-top:1px solid var(--line); padding-top:14px}
+.foot button.link{background:none; border:0; padding:0; color:var(--muted); text-decoration:underline; font-size:inherit; justify-self:start}
+.confirm{background:var(--flag); color:var(--flag-ink); border-radius:10px; padding:12px 14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.confirm .mini-btn{margin-top:0; color:var(--flag-ink); border-color:var(--flag-ink); font-size:.92rem}
+#copy-fallback{font-size:.95rem; min-height:10em; overflow:auto}
+@media (prefers-reduced-motion:no-preference){
+  .hint-notes li:last-child{animation:pop .25s ease-out}
+  @keyframes pop{from{transform:translateY(-4px); opacity:.4} to{transform:none; opacity:1}}
+}
+</style>
+
+<div class="wrap">
+  <header class="board">
+    <p class="board-topic">우리 학교를 움직이는 사람들, 감사합니다</p>
+    <h1>면담 질문 수첩</h1>
+    <p class="board-sub">힌트 쪽지를 읽고, 내 질문을 내 손으로 써요. 오늘의 목표는 질문 10개예요.</p>
+  </header>
+
+  <div class="bar">
+    <nav class="steps" aria-label="단계">
+      <button type="button" class="step-btn" data-go="1" aria-label="1단계 목적 정하기"><span class="n">1</span><span class="lbl">목적 정하기</span></button>
+      <button type="button" class="step-btn" data-go="2" aria-label="2단계 질문 쓰기"><span class="n">2</span><span class="lbl">질문 쓰기</span></button>
+      <button type="button" class="step-btn" data-go="3" aria-label="3단계 다듬기"><span class="n">3</span><span class="lbl">다듬기</span></button>
+      <button type="button" class="step-btn" data-go="4" aria-label="4단계 질문지"><span class="n">4</span><span class="lbl">질문지</span></button>
+    </nav>
+    <div class="count" aria-live="polite">
+      <span>쓴 질문 <b id="count-num">0</b> / 10</span>
+      <span class="dots" id="dots" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <main>
+    <!-- 1단계 -->
+    <section class="stage" id="stage-1">
+      <div class="stage-head">
+        <h2>면담 목적 정하기</h2>
+        <p>면담(인터뷰)은 궁금한 것을 알아보려고 사람을 직접 만나 묻는 일이에요. 질문을 만들기 전에 누구를, 왜 만나는지부터 정해요.</p>
+      </div>
+      <div class="name-row">
+        <label for="f-name">학년 반 이름</label>
+        <input type="text" id="f-name" data-field="name" autocomplete="off" placeholder="예: 4학년 2반 김○○">
+      </div>
+      <div class="field">
+        <label class="q-label" for="f-who">누구를 만나고 싶은가요?</label>
+        <div class="hintbox" data-hintbox="who"></div>
+        <input type="text" id="f-who" data-field="who" autocomplete="off" placeholder="만나고 싶은 분을 써 보세요">
+      </div>
+      <div class="field">
+        <label class="q-label" for="f-curious">무엇이 궁금한가요?</label>
+        <div class="hintbox" data-hintbox="curious"></div>
+        <textarea id="f-curious" data-field="curious" rows="2" placeholder="궁금한 것을 문장으로 써 보세요"></textarea>
+      </div>
+      <div class="field">
+        <label class="q-label" for="f-why">왜 면담을 하나요?</label>
+        <div class="hintbox" data-hintbox="why"></div>
+        <textarea id="f-why" data-field="why" rows="2" placeholder="면담하는 까닭을 써 보세요"></textarea>
+      </div>
+      <div class="pager">
+        <span></span>
+        <button type="button" class="btn" data-go="2">다음: 질문 쓰기</button>
+      </div>
+    </section>
+
+    <!-- 2단계 -->
+    <section class="stage" id="stage-2" hidden>
+      <div class="stage-head">
+        <h2>네 가지 질문 쓰기</h2>
+        <p>질문에는 종류가 있어요. 종류마다 힌트 쪽지를 열어 보고, 떠오른 질문을 직접 써 보세요.</p>
+      </div>
+      <div class="recap" id="recap"></div>
+      <div class="types" id="types"></div>
+      <div class="pager">
+        <button type="button" class="btn ghost" data-go="1">이전: 목적 정하기</button>
+        <button type="button" class="btn" data-go="3">다음: 다듬기</button>
+      </div>
+    </section>
+
+    <!-- 3단계 -->
+    <section class="stage" id="stage-3" hidden>
+      <div class="stage-head">
+        <h2>좋은 질문으로 다듬기</h2>
+        <p>내가 쓴 질문을 소리 내어 읽고, 아래 네 가지에 맞는지 살펴봐요. 다 살펴본 것에는 표시해요.</p>
+      </div>
+      <div class="rules">
+        <div class="rule">
+          <label for="chk-0"><input type="checkbox" id="chk-0" data-check="0">구체적으로 대답할 수 있는 질문인가요?</label>
+          <details><summary>고친 예 보기</summary><div class="fix"><s>일은 어떠세요?</s><span>하루 중 가장 바쁜 때는 언제인가요?</span></div></details>
+        </div>
+        <div class="rule">
+          <label for="chk-1"><input type="checkbox" id="chk-1" data-check="1">한 질문에 한 가지만 묻고 있나요?</label>
+          <details><summary>고친 예 보기</summary><div class="fix"><s>몇 시에 오시고 무슨 일을 하시나요?</s><span>몇 시에 학교에 오시나요?</span><span>학교에 오셔서 가장 먼저 하시는 일은 무엇인가요?</span></div></details>
+        </div>
+        <div class="rule">
+          <label for="chk-2"><input type="checkbox" id="chk-2" data-check="2">쉽고 정확한 말을 썼나요?</label>
+          <details><summary>고친 예 보기</summary><div class="fix"><s>업무상 애로 사항은 무엇입니까?</s><span>일하시면서 어려운 점은 무엇인가요?</span></div></details>
+        </div>
+        <div class="rule">
+          <label for="chk-3"><input type="checkbox" id="chk-3" data-check="3">'예', '아니요'보다 설명을 들을 수 있는 질문인가요?</label>
+          <details><summary>고친 예 보기</summary><div class="fix"><s>일이 재미있으세요?</s><span>일하시면서 재미있을 때는 언제인가요?</span></div></details>
+        </div>
+      </div>
+      <p class="q-sub">순서도 중요해요. 대답하기 쉬운 질문을 앞에 두면 이야기가 편하게 시작돼요. 위·아래 버튼으로 순서를 바꿀 수 있어요.</p>
+      <ol class="polish" id="polish"></ol>
+      <div class="pager">
+        <button type="button" class="btn ghost" data-go="2">이전: 질문 쓰기</button>
+        <button type="button" class="btn" data-go="4">다음: 질문지 보기</button>
+      </div>
+    </section>
+
+    <!-- 4단계 -->
+    <section class="stage" id="stage-4" hidden>
+      <div class="stage-head">
+        <h2>나의 면담 질문지</h2>
+        <p>면담은 감사 인사로 마무리해요. 마지막에 드릴 말을 쓰면 질문지가 완성돼요.</p>
+      </div>
+      <div class="field">
+        <label class="q-label" for="f-thanks">면담을 마치며 드릴 감사 인사</label>
+        <div class="hintbox" data-hintbox="thanks"></div>
+        <textarea id="f-thanks" data-field="thanks" rows="2" placeholder="감사한 마음을 한두 문장으로 써 보세요"></textarea>
+      </div>
+      <article class="sheet" id="sheet"></article>
+      <div class="actions">
+        <button type="button" class="btn" id="copy-btn">질문지 글 복사하기</button>
+        <span class="status" id="copy-status" role="status"></span>
+      </div>
+      <textarea id="copy-fallback" hidden readonly aria-label="복사할 질문지 글"></textarea>
+      <div class="pager">
+        <button type="button" class="btn ghost" data-go="3">이전: 다듬기</button>
+        <span></span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>쓴 글은 이 기기에 자동으로 저장돼요. 다른 기기에서는 보이지 않아요.</p>
+    <button type="button" class="link" id="reset-btn">처음부터 다시 쓰기</button>
+    <div class="confirm" id="reset-confirm" hidden>
+      <span>쓴 글이 모두 지워져요. 정말 지울까요?</span>
+      <button type="button" class="mini-btn" id="reset-yes">모두 지우기</button>
+      <button type="button" class="mini-btn" id="reset-no">그대로 두기</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var KEY = 'interview-notebook-v1';
+  var GOAL = 10, MAX_PER_TYPE = 5;
+
+  var TYPES = [
+    {id:'info', name:'기본 정보 질문', desc:'하시는 일이 무엇인지 알아보는 질문이에요.', ex:'어떤 일을 하시나요?', n:2},
+    {id:'exp',  name:'경험 질문',      desc:'일하시면서 겪은 일을 듣는 질문이에요.',     ex:'이 일을 하면서 기억에 남는 일은 무엇인가요?', n:3},
+    {id:'how',  name:'방법 질문',      desc:'일을 어떻게 하시는지 알아보는 질문이에요.', ex:'일을 잘하기 위해 어떤 능력이 필요한가요?', n:2},
+    {id:'feel', name:'느낌·생각 질문', desc:'마음과 생각을 듣는 질문이에요.',           ex:'이 일을 하면서 가장 보람을 느낄 때는 언제인가요?', n:3}
+  ];
+
+  var HINTS = {
+    who: [
+      '지난 시간에 알게 된 분들을 떠올려 보세요. 우리 학교 곳곳에서 어떤 분들이 일하고 계셨나요?',
+      '학교에서 자주 마주치지만 이야기를 나눠 본 적은 없는 분이 있나요?',
+      '"저분은 하루 종일 무슨 일을 하실까?" 하고 가장 궁금했던 분을 써 보세요.'
+    ],
+    curious: [
+      '{who}께서 일하시는 모습을 본 적이 있나요? 그때 어떤 생각이 들었나요?',
+      '{who}께서 하루 동안 안 계신다면 우리 학교는 어떻게 될까요? 거기에서 궁금한 점을 찾아보세요.',
+      '"나는 ~이 궁금하다."처럼 써 보세요. 여러 가지를 써도 좋아요.'
+    ],
+    why: [
+      '면담이 끝났을 때 무엇을 알게 되면 좋을까요?',
+      '알게 된 것을 누구에게, 어떻게 전하고 싶나요?',
+      '오늘의 주제는 "감사합니다"예요. 이 면담은 감사한 마음과 어떻게 이어질까요?',
+      '"~을 알고 싶어서", "~을 전하고 싶어서"처럼 끝맺어 보세요.'
+    ],
+    info: [
+      '{who}의 하루를 상상해 보세요. 학교에 오셔서 집에 가실 때까지, 내가 모르는 부분은 어디인가요?',
+      '"언제", "어디에서", "누구와", "얼마나"를 넣으면 정보를 묻는 질문이 돼요.',
+      '일하실 때 쓰시는 물건이나 일하시는 곳 가운데 궁금한 것이 있나요?',
+      '이 일을 처음 시작하신 때의 이야기도 정보예요.'
+    ],
+    exp: [
+      '기뻤던 일, 힘들었던 일, 놀랐던 일, 웃음이 났던 일. 어떤 이야기를 듣고 싶나요?',
+      '"~했던 적", "가장 ~했던 때"를 넣으면 경험을 묻는 질문이 돼요.',
+      '우리 학생들과 있었던 일을 여쭤볼 수도 있어요.',
+      '계절이나 학교 행사에 따라 달라지는 일이 있을지 생각해 보세요.'
+    ],
+    how: [
+      '{who}께서 하시는 일 가운데 "저건 어떻게 하는 걸까?" 싶었던 일이 있나요?',
+      '"어떻게", "어떤 방법으로", "어떤 순서로"를 넣어 보세요.',
+      '어려운 일이 생겼을 때 어떻게 해결하시는지도 방법을 묻는 질문이에요.',
+      '이 일을 하려면 무엇을 배우고 준비해야 하는지도 궁금하지 않나요?'
+    ],
+    feel: [
+      '보람, 기쁨, 속상함, 걱정, 뿌듯함. {who}의 어떤 마음이 궁금한가요?',
+      '"~할 때 어떤 마음이 드시나요", "~을 어떻게 생각하시나요"처럼 써 볼 수 있어요.',
+      '우리 학생들에게 바라시는 점이나 하고 싶으신 말씀을 여쭤보세요.',
+      '감사한 마음을 전하려면 무엇을 알아야 할까요? 우리가 도울 수 있는 일을 여쭤보는 것도 좋아요.'
+    ],
+    thanks: [
+      '바쁘신데도 시간을 내어 주신 것에 어떤 말을 드리고 싶나요?',
+      '{who}께서 평소에 해 주시는 일 가운데 가장 고마운 일을 떠올려 보세요.',
+      '"~해 주셔서 감사합니다."처럼 무엇이 감사한지 넣어서 써 보세요.'
+    ]
+  };
+
+  var BULB = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 21h6M10 18h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function $(s, r){ return (r || document).querySelector(s); }
+  function $all(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  /* ---------- 상태 ---------- */
+  function freshState(){
+    var st = {step:1, name:'', who:'', curious:'', why:'', thanks:'', seq:0, qs:[], hints:{}, checks:[false,false,false,false]};
+    TYPES.forEach(function(t){
+      for (var i = 0; i < t.n; i++){ st.seq++; st.qs.push({id:st.seq, type:t.id, text:''}); }
+    });
+    return st;
+  }
+  function loadState(){
+    var st = freshState();
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw){
+        var s = JSON.parse(raw);
+        if (s && Array.isArray(s.qs) && s.qs.length){
+          ['name','who','curious','why','thanks'].forEach(function(k){ if (typeof s[k] === 'string') st[k] = s[k]; });
+          st.qs = s.qs.filter(function(q){ return q && typeof q.text === 'string' && TYPES.some(function(t){ return t.id === q.type; }); });
+          st.seq = st.qs.reduce(function(m, q){ return Math.max(m, Number(q.id) || 0); }, 0);
+          if (s.hints && typeof s.hints === 'object') st.hints = s.hints;
+          if (Array.isArray(s.checks)) st.checks = [0,1,2,3].map(function(i){ return !!s.checks[i]; });
+          if (s.step >= 1 && s.step <= 4) st.step = s.step;
+          if (!st.qs.length) st = freshState();
+        }
+      }
+    } catch (e) {}
+    return st;
+  }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  var state = loadState();
+
+  function who(){ return state.who.trim() || '그분'; }
+  function written(){ return state.qs.filter(function(q){ return q.text.trim(); }); }
+  function typeOf(id){ return TYPES.filter(function(t){ return t.id === id; })[0]; }
+  function findQ(id){ return state.qs.filter(function(q){ return String(q.id) === String(id); })[0]; }
+
+  /* ---------- 힌트 ---------- */
+  function hintHTML(key){
+    var list = HINTS[key];
+    var n = Math.min(state.hints[key] || 0, list.length);
+    var h = '';
+    if (n > 0){
+      h += '<ul class="hint-notes">' + list.slice(0, n).map(function(t){
+        return '<li>' + esc(t.replace(/\{who\}/g, who())) + '</li>';
+      }).join('') + '</ul>';
+    }
+    if (n < list.length){
+      h += '<button type="button" class="hint-btn" data-hint="' + key + '">' + BULB +
+           (n === 0 ? '힌트 보기' : '힌트 하나 더 보기') +
+           ' <span class="hint-left">남은 힌트 ' + (list.length - n) + '개</span></button>';
+    } else {
+      h += '<p class="hint-done">힌트를 모두 봤어요. 이제 내 말로 써 보세요.</p>';
+    }
+    return h;
+  }
+  function renderHint(key){
+    var box = $('[data-hintbox="' + key + '"]');
+    if (box) box.innerHTML = hintHTML(key);
+  }
+
+  /* ---------- 좋은 질문 살펴보기 ---------- */
+  var FAMILIES = [['무엇','무슨','뭐','뭘'], ['어떤','어느'], ['어떻게','어떠','어때'], ['언제'], ['어디'], ['누구','누가'], ['왜'], ['얼마','몇']];
+  function review(text, all){
+    var t = text.trim(), notes = [];
+    if (!t) return [{blank:true, m:'아직 쓰지 않았어요. 여기에서 바로 써도 좋아요.'}];
+    var bare = t.replace(/\s/g, '');
+    var fam = FAMILIES.filter(function(f){ return f.some(function(w){ return t.indexOf(w) !== -1; }); }).length;
+    var marks = (t.match(/[?？]/g) || []).length;
+    if (!/[?？]$/.test(t)) notes.push('질문은 물음표(?)로 끝내요.');
+    var core = t.replace(/[?？!.\s]+$/, '');
+    if (!/(요|까|죠)$/.test(core)) notes.push('어른께 여쭤보는 질문이에요. "~요?", "~까요?"처럼 높임말로 끝내 보세요.');
+    if (fam === 0) notes.push('"예", "아니요"로 대답이 끝날 수도 있어요. "무엇", "어떻게", "왜" 같은 말을 넣어 볼까요?');
+    if (marks >= 2 || t.indexOf('그리고') !== -1 || (fam >= 2 && /[고며],?\s/.test(t)))
+      notes.push('두 가지를 한꺼번에 묻고 있지는 않나요? 질문 두 개로 나눌 수 있어요.');
+    if (bare.length < 8) notes.push('조금 짧아요. 어떤 때, 어떤 일에 대한 질문인지 넣어 볼까요?');
+    if (bare.length > 60) notes.push('질문이 길어요. 듣는 분이 한 번에 알아들을 수 있게 줄여 볼까요?');
+    if (all.filter(function(x){ return x.trim() === t; }).length > 1) notes.push('똑같은 질문이 또 있어요.');
+    if (!notes.length) return [{fine:true, m:'소리 내어 읽어 보고, 위의 네 가지에 맞는지 스스로 확인해 보세요.'}];
+    return notes.map(function(m){ return {fine:false, m:m}; });
+  }
+  function notesHTML(q){
+    var all = state.qs.map(function(x){ return x.text; });
+    return review(q.text, all).map(function(n){
+      return '<li' + (n.fine ? ' class="fine"' : n.blank ? ' class="blank"' : '') + '>' + esc(n.m) + '</li>';
+    }).join('');
+  }
+  function updateNotes(){
+    state.qs.forEach(function(q){
+      var el = document.getElementById('notes-' + q.id);
+      if (el) el.innerHTML = notesHTML(q);
+    });
+  }
+
+  /* ---------- 그리기 ---------- */
+  function grow(ta){ ta.style.height = 'auto'; ta.style.height = (ta.scrollHeight + 4) + 'px'; }
+  function growAll(root){ $all('textarea', root).forEach(function(ta){ if (!ta.hidden) grow(ta); }); }
+
+  function renderCount(){
+    var n = written().length;
+    $('#count-num').textContent = n;
+    var d = '';
+    for (var i = 0; i < GOAL; i++) d += '<i' + (i < n ? ' class="on"' : '') + '></i>';
+    $('#dots').innerHTML = d;
+  }
+
+  function renderRecap(){
+    var w = state.who.trim(), c = state.curious.trim();
+    var h;
+    if (!w && !c){
+      h = '<span>아직 면담 목적을 쓰지 않았어요. 1단계에서 누구를 만날지 먼저 정해 보세요.</span>';
+    } else {
+      h = '<span><b>내가 만날 분</b> ' + esc(w || '아직 쓰지 않았어요') + '</span>' +
+          '<span><b>궁금한 것</b> ' + esc(c || '아직 쓰지 않았어요') + '</span>';
+    }
+    $('#recap').innerHTML = h;
+  }
+
+  function renderStep2(){
+    renderRecap();
+    $('#types').innerHTML = TYPES.map(function(t){
+      var rows = '';
+      var count = state.qs.filter(function(q){ return q.type === t.id; }).length;
+      state.qs.forEach(function(q, i){
+        if (q.type !== t.id) return;
+        rows += '<li class="q-row">' +
+          '<span class="num" aria-hidden="true">' + (i + 1) + '</span>' +
+          '<textarea id="q2-' + q.id + '" data-q="' + q.id + '" rows="1" aria-label="질문 ' + (i + 1) + ' (' + t.name + ')" placeholder="여기에 질문을 써 보세요">' + esc(q.text) + '</textarea>' +
+          (count > 1 ? '<button type="button" class="mini-btn" data-del="' + q.id + '">지우기</button>' : '<span></span>') +
+          '</li>';
+      });
+      return '<section class="type" style="--c:var(--c-' + t.id + ')">' +
+        '<div class="type-head"><h3>' + t.name + '</h3><p>' + t.desc + '</p></div>' +
+        '<p class="example"><span class="example-tag">예</span><span>' + t.ex + '</span>' +
+        '<span class="example-note">그대로 옮기지 말고, ' + esc(who()) + '께 여쭤볼 내 질문으로 써요.</span></p>' +
+        '<div class="hintbox" data-hintbox="' + t.id + '">' + hintHTML(t.id) + '</div>' +
+        '<ol class="q-list">' + rows + '</ol>' +
+        (count < MAX_PER_TYPE ? '<button type="button" class="add-btn" data-add="' + t.id + '">+ ' + t.name + ' 하나 더 쓰기</button>' : '') +
+        '</section>';
+    }).join('');
+  }
+
+  function renderStep3(){
+    $('#polish').innerHTML = state.qs.map(function(q, i){
+      var t = typeOf(q.type);
+      return '<li class="polish-item" style="--c:var(--c-' + q.type + ')">' +
+        '<div class="polish-top"><span class="num" aria-hidden="true">' + (i + 1) + '</span>' +
+        '<span class="kind">' + t.name + '</span>' +
+        '<span class="polish-move">' +
+        '<button type="button" class="mini-btn" data-move="-1" data-id="' + q.id + '"' + (i === 0 ? ' disabled' : '') + '>위로</button>' +
+        '<button type="button" class="mini-btn" data-move="1" data-id="' + q.id + '"' + (i === state.qs.length - 1 ? ' disabled' : '') + '>아래로</button>' +
+        '</span></div>' +
+        '<textarea id="q3-' + q.id + '" data-q="' + q.id + '" rows="1" aria-label="질문 ' + (i + 1) + ' 고쳐 쓰기" placeholder="여기에 질문을 써 보세요">' + esc(q.text) + '</textarea>' +
+        '<ul class="checks" id="notes-' + q.id + '">' + notesHTML(q) + '</ul>' +
+        '</li>';
+    }).join('');
+    $all('[data-check]').forEach(function(c){ c.checked = !!state.checks[Number(c.dataset.check)]; });
+  }
+
+  function renderSheet(){
+    var qs = written();
+    var h = '<div class="sheet-title"><h3>면담 질문지</h3>' +
+      '<span class="sheet-name">학년 반 이름 <b>' + esc(state.name.trim() || ' ') + '</b></span></div>' +
+      '<dl>' +
+      '<dt>만날 분</dt><dd>' + esc(state.who.trim() || ' ') + '</dd>' +
+      '<dt>궁금한 것</dt><dd>' + esc(state.curious.trim() || ' ') + '</dd>' +
+      '<dt>면담하는 까닭</dt><dd>' + esc(state.why.trim() || ' ') + '</dd>' +
+      '</dl>';
+    if (qs.length){
+      h += '<ol class="sheet-qs">' + qs.map(function(q){ return '<li><span>' + esc(q.text.trim()) + '</span></li>'; }).join('') + '</ol>';
+    } else {
+      h += '<p class="sheet-empty">아직 쓴 질문이 없어요. 2단계에서 질문을 쓰면 여기에 차례대로 모여요.</p>';
+    }
+    if (qs.length && qs.length < GOAL){
+      h += '<p class="sheet-empty">지금 질문이 ' + qs.length + '개예요. ' + GOAL + '개쯤 되면 이야기를 넉넉하게 들을 수 있어요.</p>';
+    }
+    if (state.thanks.trim()){
+      h += '<p class="sheet-thanks"><span>감사 인사</span>' + esc(state.thanks.trim()) + '</p>';
+    }
+    $('#sheet').innerHTML = h;
+  }
+
+  function sheetText(){
+    var lines = ['[면담 질문지]'];
+    lines.push('학년 반 이름: ' + state.name.trim());
+    lines.push('만날 분: ' + state.who.trim());
+    lines.push('궁금한 것: ' + state.curious.trim());
+    lines.push('면담하는 까닭: ' + state.why.trim());
+    lines.push('');
+    lines.push('질문');
+    written().forEach(function(q, i){ lines.push((i + 1) + '. ' + q.text.trim()); });
+    if (state.thanks.trim()){ lines.push(''); lines.push('감사 인사: ' + state.thanks.trim()); }
+    return lines.join('\n');
+  }
+
+  function fillFields(){
+    $all('[data-field]').forEach(function(el){ el.value = state[el.dataset.field] || ''; });
+  }
+
+  function go(n, quiet){
+    state.step = n;
+    for (var i = 1; i <= 4; i++){ $('#stage-' + i).hidden = (i !== n); }
+    $all('.step-btn').forEach(function(b){
+      if (Number(b.dataset.go) === n) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+    if (n === 1){ ['who','curious','why'].forEach(renderHint); }
+    if (n === 2) renderStep2();
+    if (n === 3) renderStep3();
+    if (n === 4){ renderHint('thanks'); renderSheet(); }
+    growAll($('#stage-' + n));
+    renderCount();
+    $('#copy-status').textContent = '';
+    $('#copy-fallback').hidden = true;
+    save();
+    if (!quiet){
+      var top = $('.bar').getBoundingClientRect().top + window.scrollY;
+      if (window.scrollY > top) window.scrollTo(0, top);
+    }
+  }
+
+  /* ---------- 이벤트 ---------- */
+  document.addEventListener('input', function(e){
+    var el = e.target;
+    if (el.dataset && el.dataset.field){
+      state[el.dataset.field] = el.value;
+      if (el.tagName === 'TEXTAREA') grow(el);
+      if (el.dataset.field === 'who'){ renderHint('curious'); renderHint('why'); }
+      if (state.step === 4) renderSheet();
+      save();
+      return;
+    }
+    if (el.dataset && el.dataset.q){
+      var q = findQ(el.dataset.q);
+      if (!q) return;
+      q.text = el.value;
+      grow(el);
+      renderCount();
+      if (state.step === 3) updateNotes();
+      save();
+    }
+  });
+
+  document.addEventListener('change', function(e){
+    var el = e.target;
+    if (el.dataset && el.dataset.check !== undefined){
+      state.checks[Number(el.dataset.check)] = el.checked;
+      save();
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('button');
+    if (!b) return;
+
+    if (b.dataset.go){ go(Number(b.dataset.go)); return; }
+
+    if (b.dataset.hint){
+      var key = b.dataset.hint;
+      state.hints[key] = (state.hints[key] || 0) + 1;
+      renderHint(key);
+      save();
+      var next = $('[data-hintbox="' + key + '"] .hint-btn');
+      if (next) next.focus();
+      return;
+    }
+
+    if (b.dataset.add){
+      var type = b.dataset.add, last = -1;
+      state.qs.forEach(function(q, i){ if (q.type === type) last = i; });
+      state.seq++;
+      var nq = {id:state.seq, type:type, text:''};
+      state.qs.splice(last + 1, 0, nq);
+      renderStep2(); growAll($('#stage-2')); save();
+      var ta = document.getElementById('q2-' + nq.id);
+      if (ta) ta.focus();
+      return;
+    }
+
+    if (b.dataset.del){
+      var dq = findQ(b.dataset.del);
+      if (!dq) return;
+      if (dq.text.trim() && !b.hasAttribute('data-armed')){
+        b.setAttribute('data-armed', '');
+        b.textContent = '정말 지우기';
+        return;
+      }
+      state.qs = state.qs.filter(function(q){ return q !== dq; });
+      renderStep2(); growAll($('#stage-2')); renderCount(); save();
+      return;
+    }
+
+    if (b.dataset.move){
+      var id = b.dataset.id, dir = Number(b.dataset.move), idx = -1;
+      state.qs.forEach(function(q, i){ if (String(q.id) === String(id)) idx = i; });
+      var to = idx + dir;
+      if (idx < 0 || to < 0 || to >= state.qs.length) return;
+      var tmp = state.qs[idx]; state.qs[idx] = state.qs[to]; state.qs[to] = tmp;
+      renderStep3(); growAll($('#stage-3')); save();
+      var again = $('[data-move="' + dir + '"][data-id="' + id + '"]');
+      if (again && !again.disabled) again.focus();
+      return;
+    }
+
+    if (b.id === 'copy-btn'){
+      var text = sheetText(), status = $('#copy-status'), fb = $('#copy-fallback');
+      var manual = function(){
+        fb.hidden = false; fb.value = text; fb.focus(); fb.select();
+        status.textContent = '아래 글을 모두 선택해서 복사해 주세요.';
+      };
+      try {
+        navigator.clipboard.writeText(text).then(function(){
+          status.textContent = '복사했어요. 붙여 넣을 곳에 붙여 넣으면 돼요.';
+        }).catch(manual);
+      } catch (err) { manual(); }
+      return;
+    }
+
+    if (b.id === 'reset-btn'){ $('#reset-confirm').hidden = false; $('#reset-no').focus(); return; }
+    if (b.id === 'reset-no'){ $('#reset-confirm').hidden = true; return; }
+    if (b.id === 'reset-yes'){
+      state = freshState();
+      $('#reset-confirm').hidden = true;
+      fillFields();
+      save();
+      go(1);
+      window.scrollTo(0, 0);
+      return;
+    }
+  });
+
+  /* ---------- 시작 ---------- */
+  fillFields();
+  go(state.step, true);
+  if (document.fonts && document.fonts.ready){
+    document.fonts.ready.then(function(){ growAll($('#stage-' + state.step)); });
+  }
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>우리 팀 인터뷰 대본 완성하기</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f4ee;--card:#fff;--ink:#28262e;--soft:#6d6a75;--line:#e6dfd2;
+--me:#f2a03b;--me-soft:#fdeed6;--pt:#3d78b8;--pt-soft:#e2ecf8;--tc:#2f7d6d;--tc-soft:#e1f1eb;--bad:#d4574b;--bad-soft:#fbe3df;--fs:1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:calc(19px*var(--fs));line-height:1.6}
+.jua,h1,h2,h3{font-family:"Jua","Noto Sans KR",sans-serif;font-weight:400}
+.wrap{max-width:960px;margin:0 auto;padding:18px 16px 90px}
+button{font:inherit;cursor:pointer;border:none;border-radius:12px;color:inherit}
+.btn{background:#fff;border:2px solid var(--line);padding:8px 14px;font-weight:500}
+.btn:hover{border-color:var(--ink)}
+.btn.go{background:var(--tc);border-color:var(--tc);color:#fff}
+.btn.orange{background:var(--me);border-color:var(--me);color:#fff}
+.btn.big{padding:12px 24px;font-size:1.1em}
+.btn:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:3px solid var(--me);outline-offset:2px}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+header h1{margin:0;font-size:1.7em}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:22px;margin-top:16px}
+.hint{color:var(--soft);margin:2px 0 14px}
+.pickgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.pick{background:#fff;border:3px solid var(--line);border-radius:18px;padding:18px;text-align:center;transition:transform .1s}
+.pick:hover{transform:translateY(-3px);border-color:var(--me)}
+.pick .e{font-size:3em;display:block;line-height:1.2}
+.pick .t{font-family:Jua;font-size:1.4em;display:block}
+.pick .s{color:var(--soft);font-size:.9em}
+/* top bar */
+.who{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.badge{font-family:Jua;border-radius:10px;padding:2px 10px;font-size:.9em;white-space:nowrap}
+.b-me{background:var(--me-soft);color:#94560a}.b-pt{background:var(--pt-soft);color:var(--pt)}.b-tc{background:var(--tc-soft);color:var(--tc)}.b-both{background:#efe4fb;color:#6b3fa0}
+.prog{flex:1;min-width:160px;height:14px;background:#eee;border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--tc);transition:width .3s}
+.tabs{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.tab{flex:1;min-width:120px;background:#fff;border:2px solid var(--line);padding:10px;font-family:Jua;font-size:1.1em}
+.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tab small{display:block;font-family:"Noto Sans KR";font-size:.68em;opacity:.75}
+/* script view */
+.sec{font-family:Jua;color:var(--tc);font-size:1.15em;margin:18px 0 6px;border-bottom:2px solid var(--tc-soft)}
+.ln{display:flex;gap:10px;align-items:flex-start;padding:6px 8px;border-radius:12px}
+.ln.mine{background:var(--me-soft)}
+.ln .tx{flex:1}
+.ln .memo{flex:1;border-bottom:2px dotted #bbb;min-height:1.8em;color:var(--tc)}
+.spk{background:none;font-size:1.1em;padding:0 4px;opacity:.65}.spk:hover{opacity:1}
+.done-mark{color:var(--tc);font-weight:700}
+/* exercise */
+.ex-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.dots{display:flex;gap:5px;flex-wrap:wrap}
+.dot{width:26px;height:26px;border-radius:50%;background:#eee;font-size:.7em;display:flex;align-items:center;justify-content:center;border:2px solid transparent}
+.dot.ok{background:var(--tc);color:#fff}.dot.cur{border-color:var(--ink)}
+.model{font-size:1.45em;line-height:2;background:#fffdf8;border:2px dashed var(--line);border-radius:16px;padding:16px 18px;margin:12px 0;letter-spacing:.02em;word-break:keep-all}
+.model .c-ok{color:var(--tc)}
+.model .c-bad{color:var(--bad);background:var(--bad-soft);border-radius:4px}
+.model .c-wait{color:#b4b0ba}
+.model.hidden .c-wait{color:transparent;background:repeating-linear-gradient(90deg,#ddd 0 70%,transparent 70% 100%);border-radius:3px}
+.blank{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--me);text-align:center;margin:0 3px;padding:0 4px;cursor:pointer;line-height:1.5}
+.blank.cur{background:var(--me-soft);border-radius:6px 6px 0 0}
+.blank.filled{color:var(--pt);font-weight:700}
+.blank.right{color:var(--tc);border-color:var(--tc)}
+.blank.wrong{color:var(--bad);border-color:var(--bad);background:var(--bad-soft)}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.chip{background:#fff;border:3px solid var(--pt-soft);border-radius:14px;padding:8px 18px;font-size:1.15em;font-weight:500}
+.chip:hover{border-color:var(--pt)}
+.chip.used{opacity:.3}
+textarea.write{width:100%;font:inherit;font-size:1.35em;line-height:1.7;border:3px solid var(--line);border-radius:14px;padding:12px 14px;resize:none;min-height:3.6em;background:#fff}
+textarea.write.good{border-color:var(--tc);background:var(--tc-soft)}
+.cheer{font-family:Jua;font-size:1.4em;color:var(--tc);min-height:1.6em;margin:8px 0}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap}
+.turn{font-family:Jua;font-size:1.3em;margin-bottom:6px}
+.rehearse{font-size:1.5em;line-height:1.8;padding:20px;border-radius:16px;margin:8px 0;word-break:keep-all}
+input.memo-in{width:100%;font:inherit;border:2px solid var(--tc);border-radius:12px;padding:10px}
+.tip{background:var(--pt-soft);border-left:6px solid var(--pt);border-radius:12px;padding:12px 14px;margin:14px 0}
+.toggle{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+.toggle input{transform:scale(1.4)}
+/* modal */
+.modal{position:fixed;inset:0;background:#0006;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow:auto;z-index:9}
+.modal .box{background:#fff;border-radius:20px;padding:20px;max-width:760px;width:100%}
+.modal textarea{width:100%;font:inherit;font-size:.85em;border:2px solid var(--line);border-radius:10px;padding:8px;min-height:240px}
+.modal input{font:inherit;font-size:.9em;border:2px solid var(--line);border-radius:10px;padding:6px 10px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:99px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:10}
+.toast.show{opacity:1}
+@keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .4s}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+<div id="modalRoot"></div>
+
+<script>
+/* ===== 기본 데이터 : 학생들이 만든 질문 그대로 =====
+   [ ] 로 감싼 낱말은 '빈칸 채우기'에서 빈칸이 됩니다. */
+const DEFAULT_TEAMS = [
+  { id:"nutri", emo:"🥗", target:"영양사 선생님", school:"신명중학교", members:["이대현","온우빈"],
+    qs:[
+      "영양사 선생님 [성함]이 어떻게 되시나요?",
+      "영양사 선생님은 학교에서 어떤 [일]을 하시나요?",
+      "영양사 선생님이 되기로 [결심]하신 [이유]는 무엇인가요?",
+      "[맛있는] [급식]을 만들기 위해 어떤 [준비]를 하시나요?",
+      "일하시면서 가장 [보람]을 느끼는 [순간]은 언제인가요?",
+      "영양사 일을 하시면서 [힘들거나] 어려운 [점]은 무엇인가요?",
+      "영양사 선생님이 되려면 어떤 [공부]를 해야 하나요?",
+      "학생들이 급식을 [맛있게] 먹는 모습을 보면 어떤 [기분]이 드시나요?",
+      "우리 학교 학생들에게 해 주고 싶은 [말씀]이 있으신가요?"
+    ],
+    closing:"선생님이 가장 [좋아하시는] [음식]은 무엇인가요?"
+  },
+  { id:"lib", emo:"📚", target:"사서 선생님", school:"신명중학교", members:["박정민","김동준"],
+    qs:[
+      "사서 선생님 [성함]이 어떻게 되시나요?",
+      "사서 선생님은 학교에서 어떤 [일]을 하시나요?",
+      "사서 선생님이 되기로 [결심]하신 [이유]는 무엇인가요?",
+      "도서관에는 [책]이 몇 [권] 정도 있나요?",
+      "도서관을 운영하시면서 가장 [즐거운] [순간]은 언제인가요?",
+      "사서 선생님으로 일하시면서 [힘든] [점]은 무엇인가요?",
+      "사서 선생님이 되려면 어떤 [공부]나 [자격]이 필요한가요?",
+      "학생들이 도서관에서 책을 [읽는] 모습을 보면 어떤 [생각]이 드시나요?",
+      "우리 학교 학생들에게 [추천]하고 싶은 책이 있나요?"
+    ],
+    closing:"선생님이 가장 [좋아하시는] [책]은 무엇인가요?"
+  }
+];
+
+/* ===== 저장 ===== */
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem("ivs-"+k); return v?JSON.parse(v):d; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem("ivs-"+k, JSON.stringify(v)); }catch(e){} }
+};
+let TEAMS = store.get("teams", null) || JSON.parse(JSON.stringify(DEFAULT_TEAMS));
+let UI = Object.assign({team:null, me:null, role:null, tab:"view", idx:0, fs:1, onlyMine:false, hideModel:false}, store.get("ui",{}));
+function saveUI(){ store.set("ui", UI); }
+function progKey(){ return `prog-${UI.team}-${UI.me}-${UI.role}`; }
+const ROLE = {q:{emo:"📝",nm:"질문지",desc:"인터뷰할 때 들고 갈 질문 목록과 대답 메모 칸을 만들어요."}, s:{emo:"🎬",nm:"대본",desc:"인사부터 질문, 끝인사까지 인터뷰 전체 대본을 만들어요."}};
+const docName = ()=> ROLE[UI.role].nm;
+let P = {};
+function loadProg(){ P = Object.assign({write:{}, blank:{}, memo:{}}, store.get(progKey(), {})); }
+function saveProg(){ store.set(progKey(), P); }
+
+/* ===== 도우미 ===== */
+const $ = s=>document.querySelector(s);
+const esc = t=>String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const plain = t=>t.replace(/\[|\]/g,"");
+const norm = t=>t.replace(/\s+/g," ").trim();
+function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1800); }
+function speak(text){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(plain(text)); u.lang="ko-KR"; u.rate=.85; speechSynthesis.speak(u);}catch(e){ toast("이 기기에서는 소리가 안 나와요"); } }
+const team = ()=>TEAMS.find(t=>t.id===UI.team);
+const CHEERS = ["참 잘했어요! 🌟","완벽해요! 👏","멋져요! 💯","최고예요! 🎉","정확해요! ⭐"];
+
+/* ===== 대본 만들기 ===== */
+function buildScript(){
+  const T = team(), L = [];
+  if(UI.role==="q"){
+    L.push({sec:"질문 목록"});
+    T.qs.forEach((q,i)=>{ L.push({who:"S", t:q, num:i+1}); L.push({who:"T"}); });
+    if(T.closing){ L.push({sec:"마무리 질문 (선택)"}); L.push({who:"S", t:T.closing}); L.push({who:"T"}); }
+  } else {
+    L.push({sec:"1. 인사하기"});
+    L.push({who:"S", t:`안녕하세요, ${T.target}.`});
+    L.push({who:"S", t:`저는 ${T.school} ${UI.me}입니다.`});
+    L.push({who:"S", t:`'우리 학교를 빛내는 사람들' 수업에서 선생님을 [소개]하려고 [인터뷰]를 하러 왔습니다.`});
+    L.push({who:"S", t:`[질문]을 드려도 [될까요]?`});
+    L.push({who:"T"});
+    L.push({who:"S", t:`인터뷰 내용을 [녹음]하고 싶은데, [허락]해 주시나요?`});
+    L.push({who:"T"});
+    L.push({sec:"2. 질문하기"});
+    T.qs.forEach((q,i)=>{ L.push({who:"S", t:q, num:i+1}); L.push({who:"T"}); });
+    if(T.closing){ L.push({sec:"3. 마무리 질문 (선택)"}); L.push({who:"S", t:T.closing}); L.push({who:"T"}); }
+    L.push({sec:(T.closing?"4":"3")+". 끝인사"});
+    L.push({who:"S", t:`오늘 [인터뷰]에 응해 주셔서 정말 [감사합니다].`});
+  }
+  L.forEach((l,i)=>l.id=i);
+  return L;
+}
+const myLines = L => L.filter(l=>l.t && l.who==="S");
+function badgeFor(who){
+  if(who==="T") return `<span class="badge b-tc">${esc(team().target)}</span>`;
+  return `<span class="badge b-me">학생</span>`;
+}
+
+/* ===== 화면 ===== */
+function render(){
+  document.documentElement.style.setProperty("--fs", UI.fs);
+  saveUI();
+  const head = `<header><h1>🎤 우리 팀 인터뷰 대본 완성하기</h1>
+    <div class="tools"><button class="btn" data-act="fs-">가-</button><button class="btn" data-act="fs+">가+</button>
+    ${UI.team?'<button class="btn" data-act="home">🏠 처음으로</button>':'<button class="btn" data-act="teacher">⚙️ 선생님용</button>'}</div></header>`;
+  let body = "";
+  if(!UI.team) body = viewTeams();
+  else if(!UI.me) body = viewMe();
+  else if(!UI.role) body = viewRole();
+  else { loadProg(); body = viewMain(); }
+  $("#app").innerHTML = head + body;
+  bind();
+}
+
+function viewTeams(){
+  return `<div class="card"><h2 style="margin:0">👥 우리 팀을 골라요</h2><p class="hint">우리가 만든 질문으로 인터뷰 대본을 완성해요.</p>
+  <div class="pickgrid">${TEAMS.map(t=>`<button class="pick" data-team="${t.id}"><span class="e">${t.emo}</span><span class="t">${esc(t.target)} 인터뷰</span><span class="s">${t.members.map(esc).join(" · ")}</span></button>`).join("")}</div></div>`;
+}
+function viewMe(){
+  const T=team();
+  return `<div class="card"><h2 style="margin:0">🙋 나는 누구인가요?</h2><p class="hint">${esc(T.target)} 인터뷰 팀이에요. 내 이름을 눌러요.</p>
+  <div class="pickgrid">${T.members.map((n,i)=>`<button class="pick" data-me="${esc(n)}"><span class="e">${i===0?'🙂':'😄'}</span><span class="t">${esc(n)}</span></button>`).join("")}</div>
+  <div class="nav"><button class="btn" data-act="back-team">◀ 팀 다시 고르기</button></div></div>`;
+}
+
+function viewRole(){
+  const T=team();
+  return `<div class="card"><h2 style="margin:0">🗂️ ${esc(UI.me)}, 무엇을 만들까요?</h2><p class="hint">짝과 나눈 내 역할을 골라요.</p>
+  <div class="pickgrid">${Object.entries(ROLE).map(([k,r])=>`<button class="pick" data-role="${k}"><span class="e">${r.emo}</span><span class="t">${r.nm} 만들기</span><span class="s">${r.desc}</span></button>`).join("")}</div>
+  <div class="nav"><button class="btn" data-act="back-me">◀ 이름 다시 고르기</button></div></div>`;
+}
+function viewMain(){
+  const L = buildScript(), mine = myLines(L);
+  const doneW = mine.filter(l=>P.write[l.id]).length;
+  const pct = mine.length? Math.round(doneW/mine.length*100):0;
+  const tabs = [
+    ["view","📖 "+docName()+" 보기","전체 흐름 보기"],
+    ["write","✍️ 따라쓰기","① 보고 똑같이 쓰기"],
+    ["blank","🧩 빈칸 채우기","② 낱말 넣어 완성하기"],
+    ["practice","🎭 연습하기","소리 내어 읽기"],
+    ["final","🏁 내 "+docName(),"완성본 보기"]
+  ];
+  let inner = {view:viewScript, blank:viewBlank, write:viewWrite, practice:viewPractice, final:viewFinal}[UI.tab](L, mine);
+  return `<div class="card" style="padding:14px 18px">
+    <div class="who"><span class="jua" style="font-size:1.2em">${team().emo} ${esc(team().target)} 인터뷰</span>
+      <span class="badge b-me">${esc(UI.me)}</span> <span class="badge b-pt">${ROLE[UI.role].emo} ${docName()} 담당</span> <button class="btn" style="padding:2px 10px;font-size:.8em" data-act="back-role">역할 바꾸기</button>
+      <div class="prog" title="따라쓰기 완성"><i style="width:${pct}%"></i></div><span class="jua">${doneW}/${mine.length}줄</span></div>
+    <div class="tabs">${tabs.map(([k,n,s])=>`<button class="tab ${UI.tab===k?'on':''}" data-tab="${k}">${n}<small>${s}</small></button>`).join("")}</div>
+  </div>
+  <div class="card">${inner}</div>`;
+}
+
+/* --- 대본 보기 --- */
+function viewScript(L){
+  const rows = L.filter(l=>!UI.onlyMine || l.sec || l.who==="S").map(l=>{
+    if(l.sec) return `<div class="sec">${l.sec}</div>`;
+    if(l.who==="T") return `<div class="ln">${badgeFor("T")}<div class="memo">${esc(P.memo[l.id]||"")}</div></div>`;
+    const mine = true;
+    return `<div class="ln ${mine?'mine':''}">${badgeFor(l.who)}<div class="tx">${l.num?`<b>${l.num}.</b> `:''}${esc(plain(l.t))} ${P.write[l.id]?'<span class="done-mark">✓</span>':''}</div><button class="spk" data-say="${esc(l.t)}" aria-label="듣기">🔊</button></div>`;
+  }).join("");
+  return `<div class="ex-top"><h2 style="margin:0">📖 ${esc(team().target)} 인터뷰 ${docName()}</h2>
+    <div class="tools"><label class="toggle"><input type="checkbox" data-act="onlyMine" ${UI.onlyMine?'checked':''}> 학생 말만 보기</label></div></div>
+  <p class="hint">${UI.role==="q"?'우리가 만든 질문이에요. 질문 아래 빈 줄은 선생님 대답을 적는 칸이에요.':'<span class="badge b-me">노란 줄</span>이 학생이 말할 부분, 빈 줄은 선생님 대답 칸이에요.'} 🔊를 누르면 읽어 줘요.</p>${rows}
+  <div class="tip">💡 <b>대답을 들으면</b> 고개를 끄덕이고 "아, 그렇군요." 하고 말해 보세요.</div>`;
+}
+
+/* --- 공통: 한 줄씩 넘기는 화면 --- */
+function clampIdx(n){ if(UI.idx>=n) UI.idx=n-1; if(UI.idx<0) UI.idx=0; }
+function dotsHtml(list, okFn){
+  return `<div class="dots">${list.map((l,i)=>`<button class="dot ${okFn(l)?'ok':''} ${i===UI.idx?'cur':''}" data-go="${i}" aria-label="${i+1}번">${i+1}</button>`).join("")}</div>`;
+}
+
+/* --- 빈칸 채우기 --- */
+function partsOf(t){ const out=[]; t.split(/(\[[^\]]+\])/).forEach(p=>{ if(!p) return; if(p.startsWith("[")) out.push({b:p.slice(1,-1)}); else out.push({s:p}); }); return out; }
+function viewBlank(L, mine){
+  const list = mine.filter(l=>/\[/.test(l.t));
+  if(!list.length) return `<p>빈칸이 있는 문장이 없어요.</p>`;
+  clampIdx(list.length);
+  const l = list[UI.idx], parts = partsOf(l.t), answers = parts.filter(p=>p.b).map(p=>p.b);
+  const st = P.blank[l.id] || {fill:Array(answers.length).fill(null)};
+  const allWords = [...new Set(L.filter(x=>x.t).flatMap(x=>partsOf(x.t).filter(p=>p.b).map(p=>p.b)))];
+  const extra = shuffle(allWords.filter(w=>!answers.includes(w)), l.id).slice(0, Math.min(3, Math.max(1, 5-answers.length)));
+  const bank = shuffle([...answers, ...extra], l.id+7);
+  const cur = st.fill.findIndex(f=>f===null);
+  const complete = cur===-1, correct = complete && st.fill.every((f,i)=>f===answers[i]);
+  let bi=0;
+  const sentence = parts.map(p=>{
+    if(p.s) return esc(p.s);
+    const i=bi++, f=st.fill[i];
+    const cls = f===null? (i===cur?'cur':'') : (complete ? (f===answers[i]?'right':'wrong') : 'filled');
+    return `<span class="blank ${cls}" data-unfill="${i}" title="누르면 지워져요">${f?esc(f):'&nbsp;'}</span>`;
+  }).join("");
+  const used = [...st.fill];
+  return `<div class="ex-top"><h2 style="margin:0">🧩 빈칸 채우기</h2>${dotsHtml(list, x=>{const s=P.blank[x.id];return s&&s.ok;})}</div>
+  <p class="hint">따라쓰기 한 문장이에요. 이번에는 알맞은 낱말 카드를 눌러 빈칸을 채워요. 빈칸을 누르면 다시 지울 수 있어요.</p>
+  <div class="turn">${badgeFor(l.who)} ${l.num?l.num+'번 질문':''} <button class="spk" data-say="${esc(l.t)}">🔊</button></div>
+  <div class="model">${sentence}</div>
+  <div class="chips">${bank.map(w=>{ const k=used.indexOf(w); const u = k>=0; if(u) used[k]=undefined; return `<button class="chip ${u?'used':''}" data-fill="${esc(w)}" ${u||complete?'disabled':''}>${esc(w)}</button>`;}).join("")}</div>
+  <div class="cheer ${correct?'pop':''}">${correct? CHEERS[l.id%CHEERS.length] : (complete? "빨간 칸을 눌러서 다시 골라 봐요 🙂":"")}</div>
+  <div class="nav"><button class="btn" data-act="prev" ${UI.idx===0?'disabled':''}>◀ 이전</button>
+    <button class="btn go big" data-act="next" ${UI.idx===list.length-1?'disabled':''}>다음 ▶</button></div>`;
+}
+function shuffle(a, seed){ a=[...a]; let s=seed*9301+49297; for(let i=a.length-1;i>0;i--){ s=(s*9301+49297)%233280; const j=Math.floor(s/233280*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* --- 따라쓰기 --- */
+function viewWrite(L, mine){
+  clampIdx(mine.length);
+  const l = mine[UI.idx]; const model = plain(l.t);
+  const val = P.write[l.id] || (P._draft && P._draft[l.id]) || "";
+  return `<div class="ex-top"><h2 style="margin:0">✍️ 따라쓰기</h2>${dotsHtml(mine, x=>P.write[x.id])}</div>
+  <p class="hint">위 문장을 보고 아래 칸에 똑같이 써요. 맞게 쓴 글자는 <b style="color:var(--tc)">초록색</b>, 틀린 글자는 <b style="color:var(--bad)">빨간색</b>이 돼요.</p>
+  <div class="turn">${badgeFor(l.who)} ${l.num?l.num+'번 질문':''} <button class="spk" data-say="${esc(model)}">🔊 듣기</button>
+    <label class="toggle" style="font-family:'Noto Sans KR';font-size:.75em;margin-left:8px"><input type="checkbox" data-act="hideModel" ${UI.hideModel?'checked':''}> 🙈 보지 않고 쓰기 (도전!)</label></div>
+  <div class="model ${UI.hideModel?'hidden':''}" id="modelBox"></div>
+  <textarea class="write" id="writeIn" rows="2" placeholder="여기에 따라 써요" autocomplete="off" spellcheck="false">${esc(val)}</textarea>
+  <div class="cheer" id="cheer"></div>
+  <div class="nav"><button class="btn" data-act="prev" ${UI.idx===0?'disabled':''}>◀ 이전</button>
+    <button class="btn" data-act="hint1">💡 다음 글자 알려 주기</button>
+    ${UI.idx===mine.length-1? '<button class="btn orange big" data-tab="blank">🧩 빈칸 채우기로 ▶</button>' : '<button class="btn go big" data-act="next">다음 ▶</button>'}</div>`;
+}
+let composing=false;
+function paintWrite(){
+  const box=$("#modelBox"), inp=$("#writeIn"); if(!box||!inp) return;
+  const L=buildScript(), mine=myLines(L), l=mine[UI.idx], model=plain(l.t);
+  const typed = inp.value.replace(/\n/g," ");
+  let html="";
+  [...model].forEach((ch,i)=>{
+    let c="c-wait";
+    if(i<typed.length){
+      if(typed[i]===ch) c="c-ok";
+      else if(composing && i===typed.length-1) c="c-wait";
+      else c="c-bad";
+    }
+    html += `<span class="${c}">${ch===" "?"&nbsp;":esc(ch)}</span>`;
+  });
+  box.innerHTML = html;
+  const ok = norm(typed)===norm(model);
+  inp.classList.toggle("good", ok);
+  const ch=$("#cheer");
+  if(ok){
+    if(!P.write[l.id]){ P.write[l.id]=typed; saveProg(); ch.textContent=CHEERS[l.id%CHEERS.length]+(UI.idx<mine.length-1?"  다음 문장으로 가요 ▶":"  이제 🧩 빈칸 채우기로 가요!"); ch.className="cheer pop"; updateProgBar(); markDot(); }
+    else ch.textContent="✓ 완성한 문장이에요";
+  } else {
+    if(P.write[l.id]){ delete P.write[l.id]; saveProg(); updateProgBar(); markDot(); }
+    P._draft = P._draft||{}; P._draft[l.id]=typed; saveProg();
+    ch.textContent=""; ch.className="cheer";
+  }
+}
+function updateProgBar(){ const L=buildScript(), mine=myLines(L); const d=mine.filter(l=>P.write[l.id]).length; const i=document.querySelector(".prog i"); if(i) i.style.width=(d/mine.length*100)+"%"; const s=document.querySelector(".who .jua:last-child"); if(s) s.textContent=`${d}/${mine.length}줄`; }
+function markDot(){ const L=buildScript(), mine=myLines(L); document.querySelectorAll(".dot").forEach((d,i)=>d.classList.toggle("ok", !!P.write[mine[i]?.id])); }
+
+/* --- 연습하기 --- */
+function viewPractice(L){
+  const list = L.filter(l=>!l.sec);
+  clampIdx(list.length);
+  const l = list[UI.idx];
+  let main;
+  if(l.who==="T"){
+    main = `<div class="turn">${badgeFor("T")} 차례예요</div>
+    <div class="rehearse" style="background:var(--tc-soft)">🎧 선생님의 대답을 잘 들어요.<br><span style="font-size:.7em">고개를 끄덕이며 "아, 그렇군요." 하고 말해요.</span></div>
+    <label class="hint" for="memoIn">✏️ 대답 메모 (인터뷰할 때 짧게 적어요)</label>
+    <input class="memo-in" id="memoIn" data-memo="${l.id}" value="${esc(P.memo[l.id]||"")}" placeholder="예: 김○○ 선생님 / 식단 짜기">`;
+  } else {
+    const mine = true;
+    main = `<div class="turn">${badgeFor(l.who)} <b>내가 말해요! 🎤</b></div>
+    <div class="rehearse" style="background:${mine?'var(--me-soft)':'var(--pt-soft)'}">${l.num?`<b>${l.num}.</b> `:''}${esc(plain(l.t))}</div>
+    <button class="btn" data-say="${esc(l.t)}">🔊 먼저 들어 보기</button>`;
+  }
+  return `<div class="ex-top"><h2 style="margin:0">🎭 연습하기</h2><span class="jua">${UI.idx+1} / ${list.length}</span></div>
+  <p class="hint">한 줄씩 소리 내어 읽어요. 선생님 역할은 짝이나 친구가 해 줘도 좋아요.</p>
+  ${main}
+  <div class="nav"><button class="btn big" data-act="prev" ${UI.idx===0?'disabled':''}>◀ 이전</button>
+  <button class="btn go big" data-act="next" ${UI.idx===list.length-1?'disabled':''}>다음 ▶</button></div>`;
+}
+
+/* --- 내 대본 --- */
+function viewFinal(L, mine){
+  const left = mine.filter(l=>!P.write[l.id]).length;
+  const rows = L.map(l=>{
+    if(l.sec) return `<div class="sec">${l.sec}</div>`;
+    if(l.who==="T") return `<div class="ln">${badgeFor("T")}<div class="memo">${esc(P.memo[l.id]||"")}</div></div>`;
+    const isMine = l.who==="S";
+    const w = P.write[l.id];
+    return `<div class="ln ${isMine?'mine':''}">${badgeFor(l.who)}<div class="tx" style="${isMine&&!w?'color:#aaa':''}">${l.num?`<b>${l.num}.</b> `:''}${esc(isMine&&w? w : plain(l.t))} ${isMine?(w?'<span class="done-mark">✓</span>':'<small>(아직 안 썼어요)</small>'):''}</div></div>`;
+  }).join("");
+  return `<div class="ex-top"><h2 style="margin:0">🏁 ${esc(UI.me)}의 인터뷰 ${docName()}</h2><span class="tools"><button class="btn orange" data-act="image">🖼️ 이미지로 저장</button><button class="btn go" data-act="copy">📋 복사하기</button></span></div>
+  <p class="hint">${left? `아직 쓰지 않은 문장이 <b>${left}개</b> 있어요. 회색 문장을 따라쓰기에서 써 보세요.` : '🎉 내 대사를 모두 직접 썼어요! 이제 소리 내어 연습해 보세요.'}</p>
+  ${rows}`;
+}
+
+/* ===== 선생님용 편집 ===== */
+function openTeacher(){
+  $("#modalRoot").innerHTML = `<div class="modal"><div class="box">
+    <h2 style="margin:0">⚙️ 선생님용: 팀과 질문 고치기</h2>
+    <p class="hint">질문은 한 줄에 하나씩 써요. 빈칸으로 만들 낱말은 [대괄호]로 감싸요. 이 기기에만 저장돼요.</p>
+    ${TEAMS.map((t,i)=>`<div class="card" style="margin-top:10px">
+      <div class="tools" style="margin-bottom:8px">
+        <input data-ed="${i}" data-k="emo" value="${esc(t.emo)}" style="width:60px" aria-label="이모지">
+        <input data-ed="${i}" data-k="target" value="${esc(t.target)}" aria-label="인터뷰 대상">
+        <input data-ed="${i}" data-k="members" value="${esc(t.members.join(','))}" aria-label="팀원(쉼표)">
+        <input data-ed="${i}" data-k="school" value="${esc(t.school)}" aria-label="학교" style="width:130px">
+      </div>
+      <textarea data-ed="${i}" data-k="qs" aria-label="질문">${esc(t.qs.join("\n"))}</textarea>
+      <label class="hint">마무리 질문(선택)</label><input data-ed="${i}" data-k="closing" value="${esc(t.closing||"")}" style="width:100%">
+    </div>`).join("")}
+    <div class="nav"><button class="btn" data-act="t-reset">↩ 처음 질문으로 되돌리기</button>
+    <span><button class="btn" data-act="t-close">닫기</button> <button class="btn go" data-act="t-save">저장</button></span></div>
+  </div></div>`;
+  $("#modalRoot").querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{
+    const a=b.dataset.act;
+    if(a==="t-close") $("#modalRoot").innerHTML="";
+    if(a==="t-reset"){ TEAMS=JSON.parse(JSON.stringify(DEFAULT_TEAMS)); store.set("teams",null); $("#modalRoot").innerHTML=""; toast("처음 질문으로 되돌렸어요"); render(); }
+    if(a==="t-save"){
+      $("#modalRoot").querySelectorAll("[data-ed]").forEach(el=>{
+        const t=TEAMS[+el.dataset.ed], k=el.dataset.k, v=el.value;
+        if(k==="qs") t.qs=v.split("\n").map(s=>s.trim()).filter(Boolean);
+        else if(k==="members") t.members=v.split(",").map(s=>s.trim()).filter(Boolean).slice(0,2);
+        else t[k]=v.trim();
+      });
+      store.set("teams",TEAMS); $("#modalRoot").innerHTML=""; toast("저장했어요"); render();
+    }
+  });
+}
+
+
+/* ===== 이미지로 저장 ===== */
+function wrapText(ctx, text, maxW){
+  const words=text.split(" "), lines=[]; let cur="";
+  const pushLong=w=>{ let part=""; for(const ch of w){ if(ctx.measureText(part+ch).width>maxW){ lines.push(part); part=ch; } else part+=ch; } return part; };
+  for(const w of words){
+    const t=cur?cur+" "+w:w;
+    if(ctx.measureText(t).width<=maxW) cur=t;
+    else { if(cur) lines.push(cur); cur = ctx.measureText(w).width>maxW ? pushLong(w) : w; }
+  }
+  if(cur) lines.push(cur);
+  return lines.length?lines:[""];
+}
+function rrect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+function drawDoc(ctx, draw){
+  const T=team(), L=buildScript(), W=1000, pad=56, BODY='"Noto Sans KR", sans-serif', HEAD='Jua, "Noto Sans KR", sans-serif';
+  const C={ink:"#28262e",soft:"#6d6a75",tc:"#2f7d6d",tcs:"#e1f1eb",me:"#94560a",mes:"#fdeed6",line:"#bdb8c2"};
+  let y=0;
+  // 머리
+  if(draw){ ctx.fillStyle=C.tc; ctx.fillRect(0,0,W,150); }
+  ctx.font=`44px ${HEAD}`; if(draw){ ctx.fillStyle="#fff"; ctx.fillText(`${T.target} 인터뷰 ${docName()}`, pad, 78); }
+  const d=new Date(); const ds=`${d.getFullYear()}. ${d.getMonth()+1}. ${d.getDate()}.`;
+  ctx.font=`22px ${BODY}`; if(draw){ ctx.fillStyle="#e1f1eb"; ctx.fillText(`${T.school}  ·  만든 사람: ${UI.me}  ·  ${ds}`, pad, 122); }
+  y=150+30;
+  const bw=120, tx=pad+bw+16, tw=W-tx-pad;
+  for(const l of L){
+    if(l.sec){
+      y+=18; ctx.font=`30px ${HEAD}`;
+      if(draw){ ctx.fillStyle=C.tc; ctx.fillText(l.sec, pad, y+30); ctx.fillStyle=C.tcs; ctx.fillRect(pad,y+44,W-pad*2,3); }
+      y+=62; continue;
+    }
+    if(l.who==="T"){
+      const memo=P.memo[l.id]||"";
+      ctx.font=`22px ${BODY}`;
+      const lines = memo? wrapText(ctx, memo, tw) : [""];
+      const h=Math.max(46, lines.length*36+10);
+      if(draw){
+        rrect(ctx,pad,y+4,bw,36,10); ctx.fillStyle=C.tcs; ctx.fill();
+        ctx.fillStyle=C.tc; ctx.font=`20px ${HEAD}`; ctx.textAlign="center"; ctx.fillText(UI.role==="q"?"대답":T.target.replace(" 선생님",""), pad+bw/2, y+30); ctx.textAlign="left";
+        ctx.font=`22px ${BODY}`; ctx.fillStyle=C.tc;
+        lines.forEach((ln,i)=>ctx.fillText(ln, tx, y+30+i*36));
+        ctx.strokeStyle=C.line; ctx.setLineDash([3,5]); ctx.lineWidth=2;
+        for(let i=0;i<lines.length;i++){ ctx.beginPath(); ctx.moveTo(tx,y+40+i*36); ctx.lineTo(W-pad,y+40+i*36); ctx.stroke(); }
+        ctx.setLineDash([]);
+      }
+      y+=h+8; continue;
+    }
+    const text=(l.num?l.num+". ":"")+(P.write[l.id]||plain(l.t));
+    ctx.font=`500 25px ${BODY}`;
+    const lines=wrapText(ctx, text, tw-20);
+    const h=lines.length*40+16;
+    if(draw){
+      rrect(ctx,pad-8,y,W-pad*2+16,h,14); ctx.fillStyle=C.mes; ctx.fill();
+      rrect(ctx,pad+4,y+10,bw-12,34,10); ctx.fillStyle="#fff"; ctx.fill();
+      ctx.fillStyle=C.me; ctx.font=`20px ${HEAD}`; ctx.textAlign="center"; ctx.fillText(UI.role==="q"?"질문":"학생", pad+4+(bw-12)/2, y+34); ctx.textAlign="left";
+      ctx.fillStyle=C.ink; ctx.font=`500 25px ${BODY}`;
+      lines.forEach((ln,i)=>ctx.fillText(ln, tx, y+36+i*40));
+    }
+    y+=h+8;
+  }
+  y+=30; ctx.font=`18px ${BODY}`;
+  if(draw){ ctx.fillStyle=C.soft; ctx.fillText("우리 학교를 빛내는 사람들 · 인터뷰 준비", pad, y); }
+  return y+40;
+}
+async function renderImage(){
+  try{ await Promise.all([document.fonts.load('44px Jua'), document.fonts.load('25px "Noto Sans KR"'), document.fonts.load('500 25px "Noto Sans KR"')]); }catch(e){}
+  const S=2, tmp=document.createElement("canvas").getContext("2d");
+  const H=drawDoc(tmp,false);
+  const cv=document.createElement("canvas"); cv.width=1000*S; cv.height=H*S;
+  const ctx=cv.getContext("2d"); ctx.scale(S,S); ctx.fillStyle="#fff"; ctx.fillRect(0,0,1000,H);
+  drawDoc(ctx,true);
+  return cv;
+}
+let dlNS;
+async function getDownloads(){
+  if(dlNS!==undefined) return dlNS;
+  try{ dlNS = (window.claude && window.claude.use) ? await window.claude.use("downloads") : null; }catch(e){ dlNS=null; }
+  return dlNS;
+}
+async function openImage(){
+  toast("이미지를 만들고 있어요…");
+  const cv=await renderImage(); const url=cv.toDataURL("image/png");
+  const fname=`${team().target} 인터뷰 ${docName()} - ${UI.me}.png`;
+  const dl=await getDownloads();
+  $("#modalRoot").innerHTML=`<div class="modal"><div class="box">
+    <div class="ex-top"><h2 style="margin:0">🖼️ 이미지 미리 보기</h2><span class="tools">
+      ${dl?'<button class="btn go big" id="imgSave">💾 저장하기</button>':''}<button class="btn" id="imgClose">닫기</button></span></div>
+    <p class="hint" id="imgHint">${dl?'저장하기를 누르면 그림 파일(PNG)로 저장돼요.':'그림을 <b>오른쪽 클릭 → "이미지를 다른 이름으로 저장"</b> 하거나, 태블릿에서는 <b>그림을 길게 눌러</b> 저장해요.'}</p>
+    <img src="${url}" alt="완성한 ${docName()} 이미지" style="width:100%;border:2px solid var(--line);border-radius:12px">
+  </div></div>`;
+  $("#imgClose").onclick=()=>$("#modalRoot").innerHTML="";
+  const sb=$("#imgSave");
+  if(sb) sb.onclick=async()=>{
+    const blob=await new Promise(r=>cv.toBlob(r,"image/png"));
+    try{ await dl.save({filename:fname, data:blob}); toast("저장했어요! 📁"); }
+    catch(e){
+      if(e&&e.code==="declined") toast("저장을 취소했어요");
+      else if(e&&e.code==="rate_limited") toast("잠깐 기다렸다가 다시 눌러 주세요");
+      else { $("#imgHint").innerHTML='여기서는 바로 저장이 안 돼요. 그림을 <b>오른쪽 클릭 → "이미지를 다른 이름으로 저장"</b> 하거나 <b>길게 눌러</b> 저장해요.'; sb.remove(); }
+    }
+  };
+}
+
+/* ===== 이벤트 ===== */
+function listFor(tab){ const L=buildScript(); if(tab==="write") return myLines(L); if(tab==="blank") return myLines(L).filter(l=>/\[/.test(l.t)); return L.filter(l=>!l.sec); }
+function bind(){
+  const A=$("#app");
+  A.querySelectorAll("[data-team]").forEach(b=>b.onclick=()=>{UI.team=b.dataset.team; UI.me=null; render();});
+  A.querySelectorAll("[data-me]").forEach(b=>b.onclick=()=>{UI.me=b.dataset.me; UI.role=null; render();});
+  A.querySelectorAll("[data-role]").forEach(b=>b.onclick=()=>{UI.role=b.dataset.role; UI.tab="view"; UI.idx=0; render();});
+  A.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{UI.tab=b.dataset.tab; UI.idx=0; render(); scrollTo(0,0);});
+  A.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>speak(b.dataset.say));
+  A.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{UI.idx=+b.dataset.go; render();});
+  A.querySelectorAll("[data-fill]").forEach(b=>b.onclick=()=>{
+    const l=listFor("blank")[UI.idx]; const n=partsOf(l.t).filter(p=>p.b).length;
+    const st=P.blank[l.id]||{fill:Array(n).fill(null)}; const i=st.fill.findIndex(f=>f===null); if(i<0) return;
+    st.fill[i]=b.dataset.fill; const ans=partsOf(l.t).filter(p=>p.b).map(p=>p.b);
+    st.ok = st.fill.every((f,k)=>f===ans[k]); P.blank[l.id]=st; saveProg(); render();
+  });
+  A.querySelectorAll("[data-unfill]").forEach(b=>b.onclick=()=>{
+    const l=listFor("blank")[UI.idx]; const st=P.blank[l.id]; if(!st) return;
+    st.fill[+b.dataset.unfill]=null; st.ok=false; saveProg(); render();
+  });
+  A.querySelectorAll("[data-act]").forEach(b=>{
+    const a=b.dataset.act;
+    const h=()=>{
+      if(a==="fs+"){UI.fs=Math.min(1.6,+(UI.fs+.1).toFixed(1)); render();}
+      else if(a==="fs-"){UI.fs=Math.max(.8,+(UI.fs-.1).toFixed(1)); render();}
+      else if(a==="home"){UI.team=null; UI.me=null; UI.role=null; render();}
+      else if(a==="back-team"){UI.team=null; render();}
+      else if(a==="teacher") openTeacher();
+      else if(a==="back-me"){UI.me=null; render();}
+      else if(a==="back-role"){UI.role=null; render();}
+      else if(a==="onlyMine"){UI.onlyMine=b.checked; render();}
+      else if(a==="hideModel"){UI.hideModel=b.checked; render();}
+      else if(a==="prev"){UI.idx--; render();}
+      else if(a==="next"){UI.idx++; render();}
+      else if(a==="to-write"){ const id=+b.dataset.line; const mine=myLines(buildScript()); UI.tab="write"; UI.idx=mine.findIndex(l=>l.id===id); render(); }
+      else if(a==="hint1"){
+        const inp=$("#writeIn"); const l=myLines(buildScript())[UI.idx]; const model=plain(l.t);
+        let k=0; const v=inp.value; while(k<v.length && v[k]===model[k]) k++;
+        inp.value = model.slice(0,k+1); paintWrite(); inp.focus();
+      }
+      else if(a==="image"){ openImage(); }
+      else if(a==="copy"){
+        const L=buildScript();
+        let n=0; const txt=`[${team().target} 인터뷰 ${docName()} - ${UI.me}]\n`+L.map(l=>l.sec?`\n■ ${l.sec}`: l.who==="T"?(UI.role==="q"?`   → 대답: ${P.memo[l.id]||"____________"}`:`${team().target}: ${P.memo[l.id]||"____________"}`) : (UI.role==="q"? `${l.num?l.num+". ":"• "}${P.write[l.id]||plain(l.t)}` : `학생: ${P.write[l.id]||plain(l.t)}`)).join("\n");
+        navigator.clipboard.writeText(txt).then(()=>toast("복사했어요! 문서에 붙여 넣으세요")).catch(()=>toast("복사가 안 됐어요. 화면을 직접 선택해 주세요"));
+      }
+    };
+    if(b.type==="checkbox") b.onchange=h; else b.onclick=h;
+  });
+  const inp=$("#writeIn");
+  if(inp){
+    inp.addEventListener("compositionstart",()=>{composing=true;});
+    inp.addEventListener("compositionend",()=>{composing=false; paintWrite();});
+    inp.addEventListener("input",paintWrite);
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); } });
+    paintWrite();
+  }
+  const mi=$("#memoIn"); if(mi) mi.oninput=()=>{P.memo[mi.dataset.memo]=mi.value; saveProg();};
+}
+render();
+</script>
+</body>
+</html>
